@@ -40,3 +40,6 @@ pgdata/
 
 # Environment files
 db.env
+
+# Music directory:
+priv/static/music

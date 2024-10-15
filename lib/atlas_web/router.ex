@@ -18,6 +18,13 @@ defmodule AtlasWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/tracks", TrackLive.Index, :index
+    live "/tracks/new", TrackLive.Index, :new
+    live "/tracks/:id/edit", TrackLive.Index, :edit
+
+    live "/tracks/:id", TrackLive.Show, :show
+    live "/tracks/:id/show/edit", TrackLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

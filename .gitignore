@@ -43,3 +43,6 @@ db.env
 
 # Music directory:
 priv/static/music
+
+# Virtualenv:
+lib/atlas/ingest/.env

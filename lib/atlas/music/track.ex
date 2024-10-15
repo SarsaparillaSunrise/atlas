@@ -2,6 +2,19 @@ defmodule Atlas.Music.Track do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder,
+           only: [
+             :artist_id,
+             :album_id,
+             :artist_name,
+             :album_name,
+             :title,
+             :audio_url,
+             :art_url,
+             :number,
+             :year,
+             :length
+           ]}
   schema "tracks" do
     field :length, :string
     field :title, :string

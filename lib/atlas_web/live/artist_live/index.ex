@@ -2,46 +2,30 @@ defmodule AtlasWeb.ArtistLive.Index do
   use AtlasWeb, :live_view
 
   alias Atlas.Music
-  alias Atlas.Music.Track
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :artists, Music.list_tracks())}
+    playlist = Music.list_tracks()
+    payload = %{playlist: playlist}
+    assign(socket, artists: playlist)
+    {:ok, push_event(socket, "liveview_loaded", payload)}
   end
 
   @impl true
-  def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  def handle_event("play_pause", _, socket) do
+    {:noreply, push_event(socket, "play_pause", %{})}
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, "Edit Track")
-    |> assign(:track, Music.get_track!(id))
+  def handle_event("play_prev", _, socket) do
+    IO.puts("play_prev #")
+    {:noreply, push_event(socket, "play_prev", %{})}
   end
 
-  defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:page_title, "New Track")
-    |> assign(:track, %Track{})
+  def handle_event("play_next", _, socket) do
+    {:noreply, push_event(socket, "play_next", %{})}
   end
 
-  defp apply_action(socket, :index, _params) do
-    socket
-    |> assign(:page_title, "Listing Tracks")
-    |> assign(:track, nil)
-  end
-
-  @impl true
-  def handle_info({AtlasWeb.TrackLive.FormComponent, {:saved, track}}, socket) do
-    {:noreply, stream_insert(socket, :tracks, track)}
-  end
-
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    track = Music.get_track!(id)
-    {:ok, _} = Music.delete_track(track)
-
-    {:noreply, stream_delete(socket, :tracks, track)}
+  def handle_event("select_track", %{"track-id" => id}, socket) do
+    {:noreply, push_event(socket, "select_track", %{track_id: id})}
   end
 end

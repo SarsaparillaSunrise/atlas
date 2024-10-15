@@ -27,6 +27,26 @@ const hooks = {};
 hooks.playback = {
   mounted() {
     console.log("Mounted");
+
+    this.handleEvent("liveview_loaded", (payload) => {
+      console.log(payload.playlist);
+    });
+
+    this.handleEvent("play_pause", (_) => {
+      console.log("Play/Pause pushed");
+    });
+
+    this.handleEvent("play_prev", (_) => {
+      console.log("Play prev pushed");
+    });
+
+    this.handleEvent("play_next", (_) => {
+      console.log("Play next pushed");
+    });
+
+    this.handleEvent("select_track", ({ track }) => {
+      nowPlaying = track;
+    });
   },
 };
 

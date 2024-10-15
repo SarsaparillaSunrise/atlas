@@ -19,6 +19,7 @@ defmodule AtlasWeb.Router do
 
     get "/", PageController, :home
 
+    live "/artists", ArtistLive.Index, :index
     live "/tracks", TrackLive.Index, :index
     live "/tracks/new", TrackLive.Index, :new
     live "/tracks/:id/edit", TrackLive.Index, :edit

@@ -1,40 +1,16 @@
-<.header>
-  Track <%= @track.id %>
-  <:subtitle>This is a track record from your database.</:subtitle>
-  <:actions>
-    <.link patch={~p"/tracks/#{@track}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit track</.button>
-    </.link>
-  </:actions>
-</.header>
+<section class="py-4 sm:py-8">
+  <div class="container mx-auto max-w-screen-lg px-4 sm:px-6 lg:px-0 flex flex-col items-center pt-2 sm:pt-4 pb-6 sm:pb-12">
+    <h1 class="font-bold text-2xl sm:text-3xl text-black tracking-tight mb-6 sm:mb-12 self-start">
+      Albums by <%= List.first(@albums).artist_name %>
+    </h1>
 
-<.list>
-  <:item title="Artist"><%= @track.artist_id %></:item>
-  <:item title="Album"><%= @track.album_id %></:item>
-  <:item title="Artist name"><%= @track.artist_name %></:item>
-  <:item title="Album name"><%= @track.album_name %></:item>
-  <:item title="Title"><%= @track.title %></:item>
-  <:item title="Audio url"><%= @track.audio_url %></:item>
-  <:item title="Art url"><%= @track.art_url %></:item>
-  <:item title="Number"><%= @track.number %></:item>
-  <:item title="Year"><%= @track.year %></:item>
-  <:item title="Length"><%= @track.length %></:item>
-</.list>
-
-<.back navigate={~p"/tracks"}>Back to tracks</.back>
-
-<.modal
-  :if={@live_action == :edit}
-  id="track-modal"
-  show
-  on_cancel={JS.patch(~p"/tracks/#{@track}")}
->
-  <.live_component
-    module={AtlasWeb.TrackLive.FormComponent}
-    id={@track.id}
-    title={@page_title}
-    action={@live_action}
-    track={@track}
-    patch={~p"/tracks/#{@track}"}
-  />
-</.modal>
+    <div class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-6">
+      <%= for %{album_name: album_name, art_url: art_url, album_id: album_id} <- @albums do %>
+        <a href={~p"/tracks"} class="block hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+          <img src={art_url |> URI.encode() |> String.replace("#", "%23")} alt={"#{album_name} Album Art"} class="w-full h-auto rounded-md">
+          <div class="mt-2 text-center font-semibold text-sm sm:text-base"><%= album_name %></div>
+        </a>
+      <% end %>
+    </div>
+  </div>
+</section>

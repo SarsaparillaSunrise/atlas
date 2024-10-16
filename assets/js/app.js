@@ -28,25 +28,105 @@ hooks.playback = {
   mounted() {
     console.log("Mounted");
 
+    let playlist = [];
+    let position = 0;
+    const player = document.createElement("audio");
+
+    const updateMetadata = (track) => {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.title,
+        artist: track.artist_name,
+        album: track.album_name,
+        artwork: [
+          {
+            src: track.art_url,
+            type: "image/jpeg",
+          },
+        ],
+      });
+
+      document.getElementById("player-art").src = track.art_url;
+      document.getElementById("player-title").innerHTML = track.title;
+      document.getElementById("player-artist").innerHTML = track.artist_name;
+    };
+
+    const getNextUp = () => {
+      return position + 1 <= playlist.length - 1
+        ? playlist[position + 1]
+        : playlist[0];
+    };
+
+    const play = () => {
+      // Call this only when a new song is playing
+      const track = playlist[position];
+      player.src = track.audio_url;
+      player.play();
+      navigator.mediaSession.playbackState = "playing";
+      updateMetadata(track);
+      player.addEventListener("ended", playNext);
+    };
+
+    const playNext = () => {
+      position + 1 <= playlist.length - 1 ? (position += 1) : (position = 0);
+      play();
+    };
+
+    const playPrev = () => {
+      position - 1 >= 0 ? (position -= 1) : (position = playlist.length - 1);
+      play();
+    };
+
+    const playPause = () => {
+      if (navigator.mediaSession.playbackState !== "playing") {
+        player.play();
+        navigator.mediaSession.playbackState = "playing";
+      } else {
+        player.pause();
+        navigator.mediaSession.playbackState = "paused";
+      }
+    };
+
+    const playTrack = (trackNumber) => {
+      const index = playlist.findIndex(
+        (track) => track.number === Number.parseInt(trackNumber, 10)
+      );
+      if (index !== -1) {
+        position = index;
+        play();
+      } else {
+        console.error(`Track number ${trackNumber} not found.`);
+      }
+    };
+
     this.handleEvent("liveview_loaded", (payload) => {
-      console.log(payload.playlist);
+      playlist = payload.playlist;
+      if (playlist.length > 0) {
+        position = 0;
+        updateMetadata(playlist[position]);
+        document.getElementById("player").classList.remove("hidden");
+      }
     });
 
     this.handleEvent("play_pause", (_) => {
-      console.log("Play/Pause pushed");
+      navigator.mediaSession.playbackState === "none" ? play() : playPause();
     });
 
     this.handleEvent("play_prev", (_) => {
-      console.log("Play prev pushed");
+      playPrev();
     });
 
     this.handleEvent("play_next", (_) => {
-      console.log("Play next pushed");
+      playNext();
     });
 
-    this.handleEvent("select_track", ({ track }) => {
-      nowPlaying = track;
+    this.handleEvent("play_song", (payload) => {
+      playTrack(payload.track_number);
     });
+
+    navigator.mediaSession.setActionHandler("play", playPause);
+    navigator.mediaSession.setActionHandler("pause", playPause);
+    navigator.mediaSession.setActionHandler("previoustrack", playPrev);
+    navigator.mediaSession.setActionHandler("nexttrack", playNext);
   },
 };
 

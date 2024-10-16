@@ -5,10 +5,7 @@ defmodule AtlasWeb.ArtistLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    playlist = Music.list_tracks()
-    payload = %{playlist: playlist}
-    assign(socket, artists: playlist)
-    {:ok, push_event(socket, "liveview_loaded", payload)}
+    {:ok, assign(socket, artists: Music.list_artists())}
   end
 
   @impl true

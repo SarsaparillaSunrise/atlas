@@ -162,4 +162,29 @@ defmodule Atlas.Music do
         }
     )
   end
+
+  @doc """
+  Retrieves all tracks associated with a specific album.
+
+  ## Parameters
+
+    - `album_id`: The unique identifier of the album for which tracks are to be retrieved.
+
+  ## Returns
+
+    - A list of `%Track{}` structs representing each track in the specified album.
+
+  ## Examples
+
+      iex> list_tracks(42)
+      [
+        %Track{id: 1, album_id: 42, title: "Track 1", ...},
+        %Track{id: 2, album_id: 42, title: "Track 2", ...}
+      ]
+
+  This function queries the database for all tracks that belong to the album identified by `album_id`.
+  """
+  def list_tracks(album_id) do
+    Repo.all(from t in Track, where: t.album_id == ^album_id)
+  end
 end

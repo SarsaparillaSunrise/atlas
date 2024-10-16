@@ -21,6 +21,8 @@ defmodule AtlasWeb.Router do
 
     live "/artists", ArtistLive.Index, :index
     live "/artists/:artist_id/albums", ArtistLive.Show, :show
+    live "/albums/:album_id", AlbumLive.Show, :show
+
     live "/tracks", TrackLive.Index, :index
     live "/tracks/new", TrackLive.Index, :new
     live "/tracks/:id/edit", TrackLive.Index, :edit

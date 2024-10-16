@@ -11,6 +11,9 @@ defmodule AtlasWeb.AlbumLive.Show do
 
   @impl true
   def handle_params(%{"album_id" => album_id}, _, socket) do
-    {:noreply, assign(socket, :album, Music.list_tracks(album_id))}
+    playlist = Music.list_tracks(album_id)
+    socket = assign(socket, :album, playlist)
+
+    {:noreply, push_event(socket, "liveview_loaded", %{playlist: playlist})}
   end
 end

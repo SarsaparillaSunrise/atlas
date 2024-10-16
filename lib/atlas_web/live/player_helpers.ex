@@ -8,7 +8,6 @@ defmodule AtlasWeb.PlayerHelpers do
 
       @impl true
       def handle_event("play_prev", _, socket) do
-        IO.puts("play_prev #")
         {:noreply, push_event(socket, "play_prev", %{})}
       end
 
@@ -18,8 +17,8 @@ defmodule AtlasWeb.PlayerHelpers do
       end
 
       @impl true
-      def handle_event("select_track", %{"track-id" => id}, socket) do
-        {:noreply, push_event(socket, "select_track", %{track_id: id})}
+      def handle_event("play_song", %{"track-number" => number}, socket) do
+        {:noreply, push_event(socket, "play_song", %{track_number: number})}
       end
     end
   end

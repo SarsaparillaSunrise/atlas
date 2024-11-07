@@ -43,3 +43,6 @@ db.env
 
 # Music library directory.
 priv/static/music
+
+# Python venv for ingestion step:
+lib/atlas/ingest/.env

@@ -38,5 +38,8 @@ npm-debug.log
 # Postgresql storage directory.
 pgdata/
 
-# Ignore environment variable files:
+# Ignore environment variable files.
 db.env
+
+# Music library directory.
+priv/static/music

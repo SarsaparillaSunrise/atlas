@@ -1,0 +1,35 @@
+<.header>
+  Track <%= @track.id %>
+  <:subtitle>This is a track record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/tracks/#{@track}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit track</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Artist"><%= @track.artist_id %></:item>
+  <:item title="Album"><%= @track.album_id %></:item>
+  <:item title="Artist name"><%= @track.artist_name %></:item>
+  <:item title="Album name"><%= @track.album_name %></:item>
+  <:item title="Title"><%= @track.title %></:item>
+  <:item title="Audio url"><%= @track.audio_url %></:item>
+  <:item title="Art url"><%= @track.art_url %></:item>
+  <:item title="Number"><%= @track.number %></:item>
+  <:item title="Year"><%= @track.year %></:item>
+  <:item title="Duration"><%= @track.duration %></:item>
+</.list>
+
+<.back navigate={~p"/tracks"}>Back to tracks</.back>
+
+<.modal :if={@live_action == :edit} id="track-modal" show on_cancel={JS.patch(~p"/tracks/#{@track}")}>
+  <.live_component
+    module={AtlasWeb.TrackLive.FormComponent}
+    id={@track.id}
+    title={@page_title}
+    action={@live_action}
+    track={@track}
+    patch={~p"/tracks/#{@track}"}
+  />
+</.modal>

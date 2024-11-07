@@ -1,0 +1,50 @@
+<.header>
+  Listing Tracks
+  <:actions>
+    <.link patch={~p"/tracks/new"}>
+      <.button>New Track</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="tracks"
+  rows={@streams.tracks}
+  row_click={fn {_id, track} -> JS.navigate(~p"/tracks/#{track}") end}
+>
+  <:col :let={{_id, track}} label="Artist"><%= track.artist_id %></:col>
+  <:col :let={{_id, track}} label="Album"><%= track.album_id %></:col>
+  <:col :let={{_id, track}} label="Artist name"><%= track.artist_name %></:col>
+  <:col :let={{_id, track}} label="Album name"><%= track.album_name %></:col>
+  <:col :let={{_id, track}} label="Title"><%= track.title %></:col>
+  <:col :let={{_id, track}} label="Audio url"><%= track.audio_url %></:col>
+  <:col :let={{_id, track}} label="Art url"><%= track.art_url %></:col>
+  <:col :let={{_id, track}} label="Number"><%= track.number %></:col>
+  <:col :let={{_id, track}} label="Year"><%= track.year %></:col>
+  <:col :let={{_id, track}} label="Duration"><%= track.duration %></:col>
+  <:action :let={{_id, track}}>
+    <div class="sr-only">
+      <.link navigate={~p"/tracks/#{track}"}>Show</.link>
+    </div>
+    <.link patch={~p"/tracks/#{track}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, track}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: track.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="track-modal" show on_cancel={JS.patch(~p"/tracks")}>
+  <.live_component
+    module={AtlasWeb.TrackLive.FormComponent}
+    id={@track.id || :new}
+    title={@page_title}
+    action={@live_action}
+    track={@track}
+    patch={~p"/tracks"}
+  />
+</.modal>

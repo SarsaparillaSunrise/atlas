@@ -35,3 +35,8 @@ atlas-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Postgresql storage directory.
+pgdata/
+
+# Ignore environment variable files:
+db.env

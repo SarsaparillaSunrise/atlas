@@ -136,5 +136,25 @@ defmodule Atlas.MusicTest do
                %{album_id: 101, album_name: "First Album"}
              ] = Enum.map(albums, &Map.take(&1, [:album_id, :album_name]))
     end
+
+    test "lists tracks for an album in track number order" do
+      album_id = 1
+
+      # Create tracks in non-sequential order to verify sorting
+      track_fixture(%{album_id: album_id, number: 3, title: "Track Three"})
+      track_fixture(%{album_id: album_id, number: 1, title: "Track One"})
+      track_fixture(%{album_id: album_id, number: 2, title: "Track Two"})
+
+      # Control case - track from different album
+      _other_track = track_fixture(%{album_id: 2, number: 1})
+
+      tracks = Music.list_album_tracks(album_id)
+
+      assert [
+               %{number: 1, title: "Track One"},
+               %{number: 2, title: "Track Two"},
+               %{number: 3, title: "Track Three"}
+             ] = Enum.map(tracks, &Map.take(&1, [:number, :title]))
+    end
   end
 end

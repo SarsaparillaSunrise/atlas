@@ -170,4 +170,29 @@ defmodule Atlas.Music do
         }
     )
   end
+
+  @doc """
+  Retrieves all tracks for an album, ordered by track number.
+
+  ## Parameters
+
+    - `album_id`: The unique identifier of the album.
+
+  ## Examples
+
+      iex> list_album_tracks(42)
+      [
+        %Track{number: 1, title: "Track 1", duration: 180, ...},
+        %Track{number: 2, title: "Track 2", duration: 195, ...}
+      ]
+
+  Returns a list of tracks, ordered by track number.
+  """
+  def list_album_tracks(album_id) do
+    Repo.all(
+      from t in Track,
+        where: t.album_id == ^album_id,
+        order_by: t.number
+    )
+  end
 end

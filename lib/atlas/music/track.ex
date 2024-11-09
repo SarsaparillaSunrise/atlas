@@ -2,6 +2,19 @@ defmodule Atlas.Music.Track do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder,
+           only: [
+             :artist_id,
+             :album_id,
+             :artist_name,
+             :album_name,
+             :title,
+             :audio_url,
+             :art_url,
+             :number,
+             :year,
+             :duration
+           ]}
   schema "tracks" do
     field :title, :string
     field :number, :integer
@@ -20,7 +33,29 @@ defmodule Atlas.Music.Track do
   @doc false
   def changeset(track, attrs) do
     track
-    |> cast(attrs, [:artist_id, :album_id, :artist_name, :album_name, :title, :audio_url, :art_url, :number, :year, :duration])
-    |> validate_required([:artist_id, :album_id, :artist_name, :album_name, :title, :audio_url, :art_url, :number, :year, :duration])
+    |> cast(attrs, [
+      :artist_id,
+      :album_id,
+      :artist_name,
+      :album_name,
+      :title,
+      :audio_url,
+      :art_url,
+      :number,
+      :year,
+      :duration
+    ])
+    |> validate_required([
+      :artist_id,
+      :album_id,
+      :artist_name,
+      :album_name,
+      :title,
+      :audio_url,
+      :art_url,
+      :number,
+      :year,
+      :duration
+    ])
   end
 end

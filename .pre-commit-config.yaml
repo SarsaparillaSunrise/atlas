@@ -6,7 +6,7 @@ repos:
       entry: mix test
       language: system
       pass_filenames: false
-      types: [elixir]
+      files: \.(ex|exs|heex)$
       verbose: true
 
     - id: mix-format

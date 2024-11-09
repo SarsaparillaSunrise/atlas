@@ -101,4 +101,39 @@ defmodule Atlas.Music do
   def change_track(%Track{} = track, attrs \\ %{}) do
     Track.changeset(track, attrs)
   end
+
+  @doc """
+  Retrieves a list of unique artists from the tracks database.
+
+  Each artist is represented by their `artist_id`, `artist_name`, and an associated `art_url`.
+  The `art_url` is selected arbitrarily from the artist's tracks.
+
+  ## Examples
+
+      iex> list_artists()
+      [
+        %{artist_id: 1, artist_name: "Artist One", art_url: "http://example.com/art1.jpg"},
+        %{artist_id: 2, artist_name: "Artist Two", art_url: "http://example.com/art2.jpg"}
+      ]
+
+  Returns a list of maps where each map contains:
+    - `:artist_id` - The unique identifier for the artist.
+    - `:artist_name` - The name of the artist.
+    - `:art_url` - An arbitrary album art URL associated with the artist.
+  """
+  def list_artists do
+    Repo.all(
+      from t in Track,
+        group_by: [t.artist_id, t.artist_name],
+        select: %{artist_id: t.artist_id, artist_name: t.artist_name, art_url: min(t.art_url)},
+        # Correct artist sort order:
+        order_by:
+          fragment(
+            "CASE WHEN LOWER(LEFT(?, 4)) = 'the ' THEN LOWER(SUBSTRING(?, 5)) ELSE LOWER(?) END",
+            t.artist_name,
+            t.artist_name,
+            t.artist_name
+          )
+    )
+  end
 end

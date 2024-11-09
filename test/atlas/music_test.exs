@@ -8,7 +8,18 @@ defmodule Atlas.MusicTest do
 
     import Atlas.MusicFixtures
 
-    @invalid_attrs %{title: nil, number: nil, year: nil, artist_id: nil, album_id: nil, artist_name: nil, album_name: nil, audio_url: nil, art_url: nil, duration: nil}
+    @invalid_attrs %{
+      title: nil,
+      number: nil,
+      year: nil,
+      artist_id: nil,
+      album_id: nil,
+      artist_name: nil,
+      album_name: nil,
+      audio_url: nil,
+      art_url: nil,
+      duration: nil
+    }
 
     test "list_tracks/0 returns all tracks" do
       track = track_fixture()
@@ -21,7 +32,18 @@ defmodule Atlas.MusicTest do
     end
 
     test "create_track/1 with valid data creates a track" do
-      valid_attrs = %{title: "some title", number: 42, year: "some year", artist_id: 42, album_id: 42, artist_name: "some artist_name", album_name: "some album_name", audio_url: "some audio_url", art_url: "some art_url", duration: 42}
+      valid_attrs = %{
+        title: "some title",
+        number: 42,
+        year: "some year",
+        artist_id: 42,
+        album_id: 42,
+        artist_name: "some artist_name",
+        album_name: "some album_name",
+        audio_url: "some audio_url",
+        art_url: "some art_url",
+        duration: 42
+      }
 
       assert {:ok, %Track{} = track} = Music.create_track(valid_attrs)
       assert track.title == "some title"
@@ -42,7 +64,19 @@ defmodule Atlas.MusicTest do
 
     test "update_track/2 with valid data updates the track" do
       track = track_fixture()
-      update_attrs = %{title: "some updated title", number: 43, year: "some updated year", artist_id: 43, album_id: 43, artist_name: "some updated artist_name", album_name: "some updated album_name", audio_url: "some updated audio_url", art_url: "some updated art_url", duration: 43}
+
+      update_attrs = %{
+        title: "some updated title",
+        number: 43,
+        year: "some updated year",
+        artist_id: 43,
+        album_id: 43,
+        artist_name: "some updated artist_name",
+        album_name: "some updated album_name",
+        audio_url: "some updated audio_url",
+        art_url: "some updated art_url",
+        duration: 43
+      }
 
       assert {:ok, %Track{} = track} = Music.update_track(track, update_attrs)
       assert track.title == "some updated title"
@@ -72,6 +106,18 @@ defmodule Atlas.MusicTest do
     test "change_track/1 returns a track changeset" do
       track = track_fixture()
       assert %Ecto.Changeset{} = Music.change_track(track)
+    end
+
+    test "sorts artists ignoring 'The'" do
+      track_fixture(%{artist_name: "The 1975"})
+      track_fixture(%{artist_name: "Tenacious D"})
+      track_fixture(%{artist_name: "The Ataris"})
+
+      assert Music.list_artists() |> Enum.map(& &1.artist_name) == [
+               "The 1975",
+               "The Ataris",
+               "Tenacious D"
+             ]
     end
   end
 end

@@ -136,4 +136,38 @@ defmodule Atlas.Music do
           )
     )
   end
+
+  @doc """
+  Retrieves a list of albums for a given artist.
+
+  Each album is represented by its `album_id`, `album_name`, the `artist_name`, and an associated `art_url`.
+  The `art_url` is selected arbitrarily from the album's tracks.
+
+  ## Examples
+
+      iex> list_albums_by_artist(1)
+      [
+        %{album_id: 101, album_name: "Album One", artist_name: "Artist One", art_url: "http://example.com/art1.jpg"},
+        %{album_id: 102, album_name: "Album Two", artist_name: "Artist One", art_url: "http://example.com/art2.jpg"}
+      ]
+
+  Returns a list of maps where each map contains:
+    - `:album_id` - The unique identifier for the album.
+    - `:album_name` - The name of the album.
+    - `:artist_name` - The name of the artist.
+    - `:art_url` - An arbitrary album art URL associated with the album.
+  """
+  def list_albums_by_artist(artist_id) do
+    Repo.all(
+      from t in Track,
+        where: t.artist_id == ^artist_id,
+        group_by: [t.album_id, t.album_name, t.artist_name],
+        select: %{
+          album_id: t.album_id,
+          album_name: t.album_name,
+          artist_name: t.artist_name,
+          art_url: min(t.art_url)
+        }
+    )
+  end
 end

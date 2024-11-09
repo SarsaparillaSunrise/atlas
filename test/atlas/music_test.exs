@@ -119,5 +119,22 @@ defmodule Atlas.MusicTest do
                "Tenacious D"
              ]
     end
+
+    test "lists albums for a specific artist with proper grouping" do
+      artist_id = 1
+      # An artist with two albums
+      track_fixture(%{artist_id: artist_id, album_id: 101, album_name: "First Album"})
+      track_fixture(%{artist_id: artist_id, album_id: 102, album_name: "Second Album"})
+
+      # Control case - different artist's album
+      track_fixture(%{artist_id: 2})
+
+      albums = Music.list_albums_by_artist(artist_id)
+
+      assert [
+               %{album_id: 102, album_name: "Second Album"},
+               %{album_id: 101, album_name: "First Album"}
+             ] = Enum.map(albums, &Map.take(&1, [:album_id, :album_name]))
+    end
   end
 end

@@ -3,6 +3,6 @@ defmodule AtlasWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ "Home Page"
+    assert html_response(conn, 200) =~ "Search"
   end
 end

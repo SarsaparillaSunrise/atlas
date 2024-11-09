@@ -17,7 +17,7 @@ defmodule AtlasWeb.Router do
   scope "/", AtlasWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", HomeLive.Show, :show
 
     live "/tracks", TrackLive.Index, :index
     live "/tracks/new", TrackLive.Index, :new

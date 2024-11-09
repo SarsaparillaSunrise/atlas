@@ -1,5 +1,6 @@
 defmodule AtlasWeb.AlbumLive.Show do
   use AtlasWeb, :live_view
+  use AtlasWeb.PlayerHelpers
 
   alias Atlas.Music
 

@@ -5,8 +5,8 @@
     </h1>
 
     <div class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-6">
-      <%= for %{album_name: album_name, art_url: art_url, album_id: album_id} <- @albums do %>
-        <.link patch={~p"/albums/#{album_id}"} class="block hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+      <%= for %{album_name: album_name, art_url: art_url, album_id: id} <- @albums do %>
+        <.link patch={~p"/albums/#{id}"} class="block hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
           <img src={art_url} alt={"#{album_name} Album Art"} class="w-full h-auto rounded-md">
           <div class="mt-2 text-center font-semibold text-sm sm:text-base"><%= album_name %></div>
         </.link>

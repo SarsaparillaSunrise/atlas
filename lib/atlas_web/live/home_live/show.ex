@@ -6,4 +6,9 @@ defmodule AtlasWeb.HomeLive.Show do
   def mount(_params, _session, socket) do
     {:ok, assign(socket, %{})}
   end
+
+  @impl true
+  def handle_params(_params, _url, socket) do
+    {:noreply, socket}
+  end
 end

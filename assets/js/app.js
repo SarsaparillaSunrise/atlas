@@ -155,10 +155,13 @@ hooks.playback = {
       playTrack(payload.track_number);
     });
 
-    navigator.mediaSession.setActionHandler("play", playPause);
-    navigator.mediaSession.setActionHandler("pause", playPause);
-    navigator.mediaSession.setActionHandler("previoustrack", playPrev);
-    navigator.mediaSession.setActionHandler("nexttrack", playNext);
+    // Have to do this in addEventListener() or iOS will use seek action handlers:
+    player.addEventListener("playing", () => {
+      navigator.mediaSession.setActionHandler("play", playPause);
+      navigator.mediaSession.setActionHandler("pause", playPause);
+      navigator.mediaSession.setActionHandler("previoustrack", playPrev);
+      navigator.mediaSession.setActionHandler("nexttrack", playNext);
+    });
   },
 };
 

@@ -1,19 +1,21 @@
 <section class="py-4 sm:py-8">
   <div class="container mx-auto max-w-screen-lg px-4 sm:px-6 lg:px-0 flex flex-col items-center pt-2 sm:pt-4 pb-6 sm:pb-12">
-
     <h1 class="font-bold text-2xl sm:text-3xl text-black tracking-tight mb-6 sm:mb-12 self-start">
       Artists <span class="sr-only">Listing</span>
     </h1>
 
     <div class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-6">
-
-
       <%= for %{artist_id: artist_id, artist_name: artist_name, art_url: art_url} <- @artists do %>
-        <.link patch={~p"/artists/#{artist_id}/albums"} phx-click={JS.push_focus()}
+        <.link
+          patch={~p"/artists/#{artist_id}/albums"}
+          phx-click={JS.push_focus()}
           class="text-black hover:text-blue-600 focus-visible:ring-2 focus:outline-none focus:ring-black flex items-center"
         >
-          <img src={art_url} alt={"#{artist_name} Album Art"}
-            class="w-16 h-16 sm:w-14 sm:h-14 rounded-full mr-4">
+          <img
+            src={art_url}
+            alt={"#{artist_name} Album Art"}
+            class="w-16 h-16 sm:w-14 sm:h-14 rounded-full mr-4"
+          />
           <span class="font-semibold text-base sm:text-lg truncate"><%= artist_name %></span>
         </.link>
       <% end %>

@@ -23,7 +23,12 @@
 
 <.back navigate={~p"/tracks"}>Back to tracks</.back>
 
-<.modal :if={@live_action == :edit} id="track-modal" show on_cancel={JS.patch(~p"/tracks/#{@track}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="track-modal"
+  show
+  on_cancel={JS.patch(~p"/tracks/#{@track}")}
+>
   <.live_component
     module={AtlasWeb.TrackLive.FormComponent}
     id={@track.id}

@@ -38,7 +38,12 @@
   </:action>
 </.table>
 
-<.modal :if={@live_action in [:new, :edit]} id="track-modal" show on_cancel={JS.patch(~p"/tracks")}>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="track-modal"
+  show
+  on_cancel={JS.patch(~p"/tracks")}
+>
   <.live_component
     module={AtlasWeb.TrackLive.FormComponent}
     id={@track.id || :new}

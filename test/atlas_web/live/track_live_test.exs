@@ -4,9 +4,42 @@ defmodule AtlasWeb.TrackLiveTest do
   import Phoenix.LiveViewTest
   import Atlas.MusicFixtures
 
-  @create_attrs %{title: "some title", number: 42, year: "some year", artist_id: 42, album_id: 42, artist_name: "some artist_name", album_name: "some album_name", audio_url: "some audio_url", art_url: "some art_url", duration: 42}
-  @update_attrs %{title: "some updated title", number: 43, year: "some updated year", artist_id: 43, album_id: 43, artist_name: "some updated artist_name", album_name: "some updated album_name", audio_url: "some updated audio_url", art_url: "some updated art_url", duration: 43}
-  @invalid_attrs %{title: nil, number: nil, year: nil, artist_id: nil, album_id: nil, artist_name: nil, album_name: nil, audio_url: nil, art_url: nil, duration: nil}
+  @create_attrs %{
+    title: "some title",
+    number: 42,
+    year: "some year",
+    artist_id: 42,
+    album_id: 42,
+    artist_name: "some artist_name",
+    album_name: "some album_name",
+    audio_url: "some audio_url",
+    art_url: "some art_url",
+    duration: 42
+  }
+  @update_attrs %{
+    title: "some updated title",
+    number: 43,
+    year: "some updated year",
+    artist_id: 43,
+    album_id: 43,
+    artist_name: "some updated artist_name",
+    album_name: "some updated album_name",
+    audio_url: "some updated audio_url",
+    art_url: "some updated art_url",
+    duration: 43
+  }
+  @invalid_attrs %{
+    title: nil,
+    number: nil,
+    year: nil,
+    artist_id: nil,
+    album_id: nil,
+    artist_name: nil,
+    album_name: nil,
+    audio_url: nil,
+    art_url: nil,
+    duration: nil
+  }
 
   defp create_track(_) do
     track = track_fixture()

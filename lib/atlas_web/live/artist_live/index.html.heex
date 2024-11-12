@@ -9,14 +9,14 @@
         <.link
           patch={~p"/artists/#{artist_id}/albums"}
           phx-click={JS.push_focus()}
-          class="text-black hover:text-blue-600 focus-visible:ring-2 focus:outline-none focus:ring-black flex items-center"
+          class="text-black hover:text-blue-600 focus-visible:ring-2 focus:outline-none focus:ring-black flex flex-col items-center"
         >
           <img
             src={art_url}
             alt={"#{artist_name} Album Art"}
-            class="w-16 h-16 sm:w-14 sm:h-14 rounded-full mr-4"
+            class="w-16 h-16 sm:w-14 sm:h-14 rounded-full mb-2"
           />
-          <span class="font-semibold text-base sm:text-lg truncate"><%= artist_name %></span>
+          <span class="font-semibold text-base sm:text-lg text-center"><%= artist_name %></span>
         </.link>
       <% end %>
     </div>

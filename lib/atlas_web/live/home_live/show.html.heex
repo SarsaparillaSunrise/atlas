@@ -1,16 +1,65 @@
-<section class="mb-8">
-  <form class="flex items-center bg-gray-100 p-4 rounded-lg shadow-md">
-    <input
-      type="text"
-      name="query"
-      placeholder="Search"
-      class="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
-    />
-    <button
-      type="submit"
-      class="ml-2 bg-blue-600 text-white rounded-full px-4 py-2 hover:bg-blue-700"
+<div class="w-full px-4 mt-4 md:max-w-2xl md:mx-auto">
+  <.form :let={f} for={%{}} as={:search} phx-change="search" phx-submit="search">
+    <div class="flex items-center bg-gray-100 p-3 rounded-lg shadow-sm max-w-full">
+      <div class="flex-1 min-w-0">
+        <.input
+          type="text"
+          field={f[:query]}
+          value={@query}
+          placeholder="Search"
+          class="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+          phx-debounce="300"
+          autocomplete="off"
+        />
+      </div>
+      <button
+        type="submit"
+        class="ml-2 bg-blue-600 text-white rounded-full px-4 py-2 hover:bg-blue-700 whitespace-nowrap"
+      >
+        Search
+      </button>
+    </div>
+  </.form>
+
+  <%= if not Enum.empty?(@results.tracks) or not Enum.empty?(@results.artists) or not Enum.empty?(@results.albums) do %>
+    <div
+      id="search-results"
+      class="fixed inset-0 bg-gray-800/75 flex items-start justify-center pt-16 px-4 z-50"
     >
-      Search
-    </button>
-  </form>
-</section>
+      <div class="bg-white rounded-lg shadow-lg w-full max-h-[80vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white p-4 border-b">
+          <h2 class="text-xl font-bold">Search Results</h2>
+        </div>
+
+        <ul class="p-4">
+          <%= for track <- @results.tracks do %>
+            <.link patch={~p"/albums/#{track.album_id}"}>
+              <li class="mb-3 flex items-center">
+                <img
+                  src={track.art_url}
+                  alt={"#{track.title} Album Art"}
+                  class="w-12 h-12 flex-shrink-0 rounded-md"
+                />
+                <div class="ml-3 min-w-0">
+                  <div class="font-medium truncate"><%= track.title %></div>
+                  <div class="text-sm text-gray-600 truncate">
+                    <%= track.artist_name %> • <%= track.album_name %>
+                  </div>
+                </div>
+              </li>
+            </.link>
+          <% end %>
+        </ul>
+
+        <div class="sticky bottom-0 bg-white p-4 border-t">
+          <button
+            phx-click="clear_results"
+            class="w-full bg-blue-600 text-white rounded-full px-4 py-2 hover:bg-blue-700"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

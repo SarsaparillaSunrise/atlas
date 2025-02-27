@@ -21,146 +21,69 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
+import AudioPlayerService from "./services/audio_player";
 
 const hooks = {};
 
 hooks.playback = {
   mounted() {
     console.log("Mounted");
-
-    let playlist = [];
-    let position = 0;
+    
     const player = document.getElementById("audio-player");
-
-    const updateMetadata = (track) => {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: track.title,
-        artist: track.artist_name,
-        album: track.album_name,
-        artwork: [
-          {
-            src: track.art_url,
-            type: "image/jpeg",
-          },
-        ],
-      });
-
-      document.getElementById("player-art").src = track.art_url;
-      document.getElementById("player-title").innerHTML = track.title;
-      document.getElementById("player-artist").innerHTML = track.artist_name;
-    };
-
-    const getNextUp = () => {
-      return position + 1 <= playlist.length - 1
-        ? playlist[position + 1]
-        : playlist[0];
-    };
-
-    const play = () => {
-      // Call this only when a new song is playing
-      player.pause();
-      player.currentTime = 0;
-      const track = playlist[position];
-      player.src = track.audio_url;
-      player.play();
-      navigator.mediaSession.playbackState = "playing";
-      updateMetadata(track);
-      player.removeEventListener("ended", playNext);
-      player.addEventListener("ended", playNext);
-    };
-
-    player.addEventListener("timeupdate", () => {
-      const currentTime = player.currentTime;
-      const duration = player.duration;
-      const slider = document.getElementById("playback-slider");
-
-      if (slider) {
-        slider.max = duration;
-        slider.value = currentTime;
+    const audioService = new AudioPlayerService().initialize(player);
+    
+    // Set up UI callbacks
+    audioService.setCallbacks({
+      onMetadataChange: (track) => {
+        document.getElementById("player-art").src = track.art_url;
+        document.getElementById("player-title").innerHTML = track.title;
+        document.getElementById("player-artist").innerHTML = track.artist_name;
+      },
+      onTimeUpdate: (currentTime, duration) => {
+        const slider = document.getElementById("playback-slider");
+        if (slider) {
+          slider.max = duration;
+          slider.value = currentTime;
+        }
+        
+        document.getElementById("current-time").innerText = 
+          audioService.formatTime(currentTime);
+        document.getElementById("duration-time").innerText = 
+          audioService.formatTime(duration);
       }
-
-      document.getElementById("current-time").innerText =
-        formatTime(currentTime);
-      document.getElementById("duration-time").innerText = formatTime(duration);
     });
-
+    
     // Listen for slider changes to seek audio
     const slider = document.getElementById("playback-slider");
     slider.addEventListener("input", (event) => {
-      player.currentTime = event.target.value;
+      audioService.seek(event.target.value);
     });
-
-    const formatTime = (seconds) => {
-      const minutes = Math.floor(seconds / 60);
-      const secondsLeft = Math.floor(seconds % 60);
-      return `${String(minutes).padStart(2, "0")}:${String(
-        secondsLeft
-      ).padStart(2, "0")}`;
-    };
-
-    const playNext = () => {
-      position + 1 <= playlist.length - 1 ? (position += 1) : (position = 0);
-      play();
-    };
-
-    const playPrev = () => {
-      position - 1 >= 0 ? (position -= 1) : (position = playlist.length - 1);
-      play();
-    };
-
-    const playPause = () => {
-      if (navigator.mediaSession.playbackState !== "playing") {
-        player.play();
-        navigator.mediaSession.playbackState = "playing";
-      } else {
-        player.pause();
-        navigator.mediaSession.playbackState = "paused";
-      }
-    };
-
-    const playTrack = (trackNumber) => {
-      const index = playlist.findIndex(
-        (track) => track.number === Number.parseInt(trackNumber, 10)
-      );
-      if (index !== -1) {
-        position = index;
-        play();
-      } else {
-        console.error(`Track number ${trackNumber} not found.`);
-      }
-    };
-
+    
+    // Handle LiveView events
     this.handleEvent("liveview_loaded", (payload) => {
-      playlist = payload.playlist;
-      if (playlist.length > 0) {
-        position = 0;
-        updateMetadata(playlist[position]);
+      if (audioService.loadPlaylist(payload.playlist)) {
         document.getElementById("player").classList.remove("hidden");
       }
     });
-
+    
     this.handleEvent("play_pause", (_) => {
-      navigator.mediaSession.playbackState === "none" ? play() : playPause();
+      if (!audioService.getCurrentTrack()) {
+        audioService.play();
+      } else {
+        audioService.playPause();
+      }
     });
-
+    
     this.handleEvent("play_prev", (_) => {
-      playPrev();
+      audioService.playPrev();
     });
-
+    
     this.handleEvent("play_next", (_) => {
-      playNext();
+      audioService.playNext();
     });
-
+    
     this.handleEvent("play_song", (payload) => {
-      playTrack(payload.track_number);
-    });
-
-    // Have to do this in addEventListener() or iOS will use seek action handlers:
-    player.addEventListener("playing", () => {
-      navigator.mediaSession.setActionHandler("play", playPause);
-      navigator.mediaSession.setActionHandler("pause", playPause);
-      navigator.mediaSession.setActionHandler("previoustrack", playPrev);
-      navigator.mediaSession.setActionHandler("nexttrack", playNext);
+      audioService.playTrack(payload.track_number);
     });
   },
 };

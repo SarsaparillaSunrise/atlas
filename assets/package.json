@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "vitest": "^3.0.7",
+    "jsdom": "^26.0.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  }
+}

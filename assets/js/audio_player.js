@@ -43,7 +43,7 @@ export default class AudioPlayerService {
 
   play() {
     if (!this.playlist.length) return false;
-    
+
     const track = this.playlist[this.position];
     this.player.pause();
     this.player.currentTime = 0;
@@ -55,25 +55,27 @@ export default class AudioPlayerService {
   }
 
   playPause() {
-    if (this._getPlaybackState() !== 'playing') {
+    if (this.player.paused) {
       this.player.play();
       this._updateMediaSession('playing');
+      this.callbacks.onPlaybackStateChange('playing');
     } else {
       this.player.pause();
       this._updateMediaSession('paused');
+      this.callbacks.onPlaybackStateChange('paused');
     }
   }
 
   playNext() {
-    this.position + 1 <= this.playlist.length - 1 
-      ? this.position += 1 
+    this.position + 1 <= this.playlist.length - 1
+      ? this.position += 1
       : this.position = 0;
     return this.play();
   }
 
   playPrev() {
-    this.position - 1 >= 0 
-      ? this.position -= 1 
+    this.position - 1 >= 0
+      ? this.position -= 1
       : this.position = this.playlist.length - 1;
     return this.play();
   }
@@ -158,8 +160,8 @@ export default class AudioPlayerService {
   }
 
   _getPlaybackState() {
-    return 'mediaSession' in navigator ? 
-      navigator.mediaSession.playbackState : 
+    return 'mediaSession' in navigator ?
+      navigator.mediaSession.playbackState :
       (this.player && !this.player.paused ? 'playing' : 'paused');
   }
 }

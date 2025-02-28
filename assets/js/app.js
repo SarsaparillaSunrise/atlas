@@ -21,17 +21,17 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
-import AudioPlayerService from "./services/audio_player";
+import AudioPlayerService from "./audio_player";
 
 const hooks = {};
 
 hooks.playback = {
   mounted() {
     console.log("Mounted");
-    
+
     const player = document.getElementById("audio-player");
     const audioService = new AudioPlayerService().initialize(player);
-    
+
     // Set up UI callbacks
     audioService.setCallbacks({
       onMetadataChange: (track) => {
@@ -45,27 +45,27 @@ hooks.playback = {
           slider.max = duration;
           slider.value = currentTime;
         }
-        
-        document.getElementById("current-time").innerText = 
+
+        document.getElementById("current-time").innerText =
           audioService.formatTime(currentTime);
-        document.getElementById("duration-time").innerText = 
+        document.getElementById("duration-time").innerText =
           audioService.formatTime(duration);
       }
     });
-    
+
     // Listen for slider changes to seek audio
     const slider = document.getElementById("playback-slider");
     slider.addEventListener("input", (event) => {
       audioService.seek(event.target.value);
     });
-    
+
     // Handle LiveView events
     this.handleEvent("liveview_loaded", (payload) => {
       if (audioService.loadPlaylist(payload.playlist)) {
         document.getElementById("player").classList.remove("hidden");
       }
     });
-    
+
     this.handleEvent("play_pause", (_) => {
       if (!audioService.getCurrentTrack()) {
         audioService.play();
@@ -73,15 +73,15 @@ hooks.playback = {
         audioService.playPause();
       }
     });
-    
+
     this.handleEvent("play_prev", (_) => {
       audioService.playPrev();
     });
-    
+
     this.handleEvent("play_next", (_) => {
       audioService.playNext();
     });
-    
+
     this.handleEvent("play_song", (payload) => {
       audioService.playTrack(payload.track_number);
     });

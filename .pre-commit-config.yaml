@@ -15,6 +15,14 @@ repos:
       language: system
       types: [elixir]
 
+    - id: pnpm-test
+      name: 'javascript: pnpm test'
+      entry: bash -c 'cd assets && pnpm test'
+      language: system
+      pass_filenames: false
+      files: \.(js|jsx|ts|tsx)$
+      verbose: true
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:
